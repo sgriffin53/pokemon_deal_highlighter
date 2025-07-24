@@ -1,0 +1,30 @@
+.poke-price-banner {
+  background-color: rgba(0, 128, 0, 0.8); /* default green */
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.poke-price-banner.over {
+  background-color: rgba(255, 0, 0, 0.8);
+}
+
+.poke-info-panel {
+  background: #f9f9f9;
+  padding: 8px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 1.4;
+  border-radius: 6px;
+  margin-top: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.poke-wrapper {
+  border-radius: 0;
+  padding: 0;
+  background: transparent;  /* ← removes white */
+}
