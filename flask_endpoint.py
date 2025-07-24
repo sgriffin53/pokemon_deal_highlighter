@@ -3,6 +3,7 @@ import mysql.connector
 import json
 from flask import Flask, request, redirect, url_for, jsonify
 from flask_cors import CORS
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 import re
 
 class Value:
@@ -136,6 +137,27 @@ def get_card_value(item_title, this_set, card_id):
                 return None
     return value_info
 
+
+def append_affiliate_params(url):
+    aff_params = [
+        ('campid', '5339084796'),
+        ('toolid', '10001'),
+        ('mkevt', '1'),
+        ('customid', 'extension')
+    ]
+
+    parsed = urlparse(url)
+    query = parse_qsl(parsed.query, keep_blank_values=True)
+
+    # Remove existing aff params if present (prevent duplicates)
+    query = [(k, v) for (k, v) in query if k not in dict(aff_params)]
+
+    # Prepend affiliate params
+    final_query = aff_params + query
+    final_url = urlunparse(parsed._replace(query=urlencode(final_query)))
+
+    return final_url
+
 app = Flask(__name__)
 CORS(app)  # ← Allow all origins for now
 values_dict = get_values_from_db()
@@ -210,10 +232,12 @@ def root():
         modified_url = item_url
         ENABLE_AFFILIATE_LINKS = True
         if ENABLE_AFFILIATE_LINKS:
-            if '?' in modified_url:
-                modified_url += '&campid=5339084796&toolid=10001&mkevt=1&customid=extension'
-            else:
-                modified_url += '?campid=5339084796&toolid=10001&mkevt=1&customid=extension'
+         #   if '?' in modified_url:
+         #       modified_url += '&campid=5339084796&toolid=10001&mkevt=1&customid=extension'
+         #   else:
+         #       modified_url += '?campid=5339084796&toolid=10001&mkevt=1&customid=extension'
+            modified_url = append_affiliate_params(item_url)
+        print(modified_url)
         return_listings.append({
             'identified_set': this_set.title().replace("'S", "'s"),
             'identified_card': identified_as,

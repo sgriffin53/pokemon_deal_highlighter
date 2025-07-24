@@ -27,7 +27,6 @@ fetch('http://localhost:5000/get_values', {
   .then(data => {
     console.log('Valuation response:', data);
 
-    // Inject banners into listings using the response
     data.forEach((valuationData, i) => {
       const listing = Array.from(listings).find(l => {
         const link = l.querySelector('.s-item__link');
@@ -70,8 +69,19 @@ fetch('http://localhost:5000/get_values', {
       wrapper.appendChild(panel);
       listing.style.position = 'relative';
       listing.appendChild(wrapper);
+
+    if (valuationData.modified_url) {
+      const links = listing.querySelectorAll('a[href]');
+      links.forEach(link => {
+        // Match eBay item links across domains (e.g., ebay.com, ebay.co.uk, etc.)
+        if (/ebay\.[a-z.]+\/itm\//.test(link.href)) {
+          link.href = valuationData.modified_url;
+        }
+      });
+    }
+    
     });
-  })
+  }) // ← this line was missing
   .catch(error => {
     console.error('Error sending listings to backend:', error);
   });
